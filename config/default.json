@@ -1,0 +1,4 @@
+{
+    "mongoURI":
+      "mongodb+srv://diogodias:o9tl4f4cK4wRjBvl@cluster0.smgwlic.mongodb.net/photoArchive?retryWrites=true&w=majority"
+  }
