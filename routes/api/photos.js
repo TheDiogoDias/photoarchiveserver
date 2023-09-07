@@ -109,7 +109,7 @@ const Photo = require('../../models/Photos');
 // @access Public
 router.get('/test', (req, res) => res.send('book route testing!'));
 
-// @route GET api/books
+// @route GET api/photos
 // @description Get all books
 // @access Public
 router.get('/', async (req, res) => {
@@ -120,9 +120,6 @@ router.get('/', async (req, res) => {
         console.error(error);
         res.status(500).json({ message: 'Server Error' });
     }
-    // Photo.find()
-    // .then(photo => res.json(photo))
-    // .catch(err => res.status(404).json({ nophotofound: 'No Photos found' }));
 });
 
 router.get('/profile/:profileId', async (req, res) => {
@@ -137,7 +134,7 @@ router.get('/profile/:profileId', async (req, res) => {
     }
 });
 
-// @route GET api/books/:id
+// @route GET api/photos/:id
 // @description Get single book by id
 // @access Public
 router.get('/:id', (req, res) => {
@@ -146,8 +143,8 @@ router.get('/:id', (req, res) => {
     .catch(err => res.status(404).json({ nobookfound: 'No Book found' }));
 });
 
-// @route GET api/books
-// @description add/save book
+// @route GET api/photos
+// @description add/save photos
 // @access Public
 router.post('/', (req, res) => {
 
@@ -178,7 +175,7 @@ router.post('/', (req, res) => {
     }
 });
 
-// @route GET api/books/:id
+// @route GET api/photos/:id
 // @description Update book
 // @access Public
 router.put('/:id', (req, res) => {
@@ -189,7 +186,7 @@ router.put('/:id', (req, res) => {
     );
 });
 
-// @route GET api/books/:id
+// @route Delete api/photos/:id
 // @description Delete book by id
 // @access Public
 router.delete('/:id', async (req, res) => {

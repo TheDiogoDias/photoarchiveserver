@@ -40,7 +40,7 @@ router.get('/getName/:id', async (req, res) => {
     });
 });
 
-router.get('/UserExist', async (req, res) => {
+router.get('/emailExist', async (req, res) => {
     const { email } = req.query;
 
     try {
@@ -58,5 +58,25 @@ router.get('/UserExist', async (req, res) => {
       res.status(500).json({ error: 'An error occurred while checking email.' });
     }
 });
+
+router.get('/usernameExist', async (req, res) => {
+    const { username } = req.query;
+
+    try {
+      const existingUser = await User.findOne({ username });
+  
+      if (existingUser) {
+        // Email already exists
+        res.json({ exists: true });
+      } else {
+        // Email doesn't exist
+        res.json({ exists: false });
+      }
+    } catch (error) {
+      console.error('Error checking email:', error);
+      res.status(500).json({ error: 'An error occurred while checking email.' });
+    }
+});
+
 
 module.exports = router;
