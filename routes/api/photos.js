@@ -81,7 +81,7 @@ router.post('/saveProfileImage', upload.single('image'), async (req, res) => {
     .toBuffer();
 
     // Save the buffers to the server's file system
-    const uploadDirectory = path.join(__dirname, `../../profileImg/${parsedFileName}/`);
+    const uploadDirectory = path.join(__dirname, `../../uploads/profileImg/${parsedFileName}/`);
 
     try {
         fs.mkdirSync(uploadDirectory, { recursive: true }, (err) => {
