@@ -57,7 +57,53 @@ router.post('/saveImage', upload.single('image'), async (req, res) => {
     } catch (error) {
         res.status(500).json({message: 'Error saving file'});
     }
-})
+});
+
+router.post('/saveProfileImage', upload.single('image'), async (req, res) => {
+
+    const imageBuffer = req.file.buffer;
+
+    const parsedFileName = path.parse(req.file.originalname).name;
+
+    const lowQualityBuffer = await sharp(imageBuffer)
+    .resize({ width: 800 })
+    .jpeg({ quality: 30 })
+    .toBuffer();
+
+    const mediumQualityBuffer = await sharp(imageBuffer)
+    .resize({ width: 1200 })
+    .jpeg({ quality: 60 })
+    .toBuffer();
+
+    const highQualityBuffer = await sharp(imageBuffer)
+    .resize({ width: 1600 })
+    .jpeg({ quality: 80 })
+    .toBuffer();
+
+    // Save the buffers to the server's file system
+    const uploadDirectory = path.join(__dirname, `../../profileImg/${parsedFileName}/`);
+
+    try {
+        fs.mkdirSync(uploadDirectory, { recursive: true }, (err) => {
+            if (err) throw err;
+          });
+        console.log('Folder created successfully');
+      } catch (err) {
+        console.error('Error creating folder:', err);
+      }
+
+    fs.writeFileSync(path.join(uploadDirectory, 'low_quality.jpg'), lowQualityBuffer);
+    fs.writeFileSync(path.join(uploadDirectory, 'medium_quality.jpg'), mediumQualityBuffer);
+    fs.writeFileSync(path.join(uploadDirectory, 'high_quality.jpg'), highQualityBuffer);
+    fs.writeFileSync(path.join(uploadDirectory, 'original.jpg'), imageBuffer);
+
+
+    try {
+        res.json({Message: 'File saved successfully', ImageName: parsedFileName});
+    } catch (error) {
+        res.status(500).json({message: 'Error saving file'});
+    }
+});
 
 router.post('/internetSpeed', async (req, res) => {
     const { effectiveType } = req.body;
@@ -94,11 +140,27 @@ router.get('/uploads/:filename/:internetSpeed', (req, res) => {
     
 });
 
-router.get('/uploadsProfileImg/:filename', (req, res) => {
+router.get('/uploadsProfileImg/:filename/:internetSpeed', (req, res) => {
     const {filename} = req.params;
-   
-    res.sendFile(path.join(__dirname, `../../uploads/profileImg/${filename}` ));
-
+    const {internetSpeed} = req.params;
+    //'slow-2g', '2g', '3g', '4g', or '5g'
+    switch (internetSpeed) {
+        case 'slow-2g':
+            res.sendFile(path.join(__dirname, `../../uploads/profileImg/${filename}/low_quality.jpg` ));
+            break;
+        case '2g':
+            res.sendFile(path.join(__dirname, `../../uploads/profileImg/${filename}/medium_quality.jpg` ));
+            break;
+        case '3g':
+            res.sendFile(path.join(__dirname, `../../uploads/profileImg/${filename}/high_quality.jpg` ));
+            break;
+        case '4g':
+            res.sendFile(path.join(__dirname, `../../uploads/profileImg/${filename}/original.jpg` ));
+            break;
+        // Add more cases as needed
+        default:
+            res.sendFile(path.join(__dirname, `../../uploads/profileImg/${filename}/low_quality.jpg` ));
+      }
 });
 
 // Load Book model
